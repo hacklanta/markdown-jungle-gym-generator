@@ -101,6 +101,11 @@ class FileDiff
           current_chunk = current_chunk.drop(matching_lines.length)
         end
       end
+
+      # scan the rest of the file
+      while file_line = file.gets
+        final_lines << file_line 
+      end
     end
   end
 
