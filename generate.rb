@@ -44,7 +44,7 @@ puts "Reading directory #{directory} using sort strategy #{sort_strategy}..."
 absolute_repository_directory = File.realdirpath(repository_directory)
 
 Dir.chdir(directory) do
-  filenames = Dir.entries('.').sort(&sort_strategies[sort_strategy.to_sym])
+  filenames = Dir.glob('*.md').sort(&sort_strategies[sort_strategy.to_sym])
 
   filenames.each do |filename|
     next unless File.file?(filename)
