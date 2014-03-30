@@ -52,6 +52,7 @@ absolute_repository_directory = File.realdirpath(repository_directory)
 Dir.chdir(directory) do
   filenames = Dir.glob('*.md').sort(&sort_strategies[sort_strategy.to_sym])
 
+  section_infos = []
   filenames.each do |filename|
     next unless File.file?(filename)
 
@@ -81,8 +82,32 @@ Dir.chdir(directory) do
           run_command 'git', 'commit', '-m', checkpoint_message
         end
 
-        # tag section-1?
+        section_infos << { :commit => `git rev-parse HEAD`.strip, :name => file_title }
       end
+    end
+  end
+
+  names = section_infos.collect { |info| info[:name] }
+  common_prefix = names[1..-1].inject(names[0]) do |possible_prefix, name|
+    until name.match(/^#{possible_prefix}/)
+      possible_prefix = possible_prefix[0..-2]
+    end
+
+    possible_prefix
+  end
+
+  Dir.chdir(absolute_repository_directory) do
+    section_infos.each_with_index do |section_info, i|
+      tag_name =
+        section_info[:name]
+          .gsub(/^#{common_prefix}/, '')
+          .downcase
+          .gsub(/\s+/, '-')
+
+      full_tag = "step-#{i + 1}-#{tag_name}"
+
+      puts "\tTagging #{full_tag}"
+      run_command 'git', 'tag', full_tag, section_info[:commit]
     end
   end
 end
