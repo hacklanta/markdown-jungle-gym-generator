@@ -28,7 +28,7 @@ class FileDiff
       current_diff_filename = nil
       current_diff_array = nil
       lines.each do |line|
-        if current_diff_array && line.match(/^```$/)
+        if current_diff_filename && line.match(/^```$/)
           diffs << FileDiff.new(current_diff_filename, current_diff_array)
 
           current_diff_filename = nil
