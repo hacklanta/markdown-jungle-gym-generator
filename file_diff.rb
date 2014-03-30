@@ -63,6 +63,11 @@ class FileDiff
         if line == '...'
           chunks << []
         else
+          # If there is only a one-line change, there may be no leading ...
+          if chunks.last.nil?
+            chunks << []
+          end
+
           chunks.last << line
         end
 
