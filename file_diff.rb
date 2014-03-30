@@ -51,8 +51,44 @@ class FileDiff
   end
 
   # Apply the diff described in this +FileDiff+ to an existing file with
-  # +filename+.
+  # +filename+. Assumes +filename+ exists.
   def apply
+    diff_chunks =
+      @diff_array.inject([]) do |chunks, line|
+        if line == '...'
+          chunks << []
+        else
+          chunks.last << line
+        end
+
+        chunks
+      end
+
+    final_lines = []
+    File.open(filename) do |file|
+      diff_chunks.each do |current_chunk|
+        while current_chunk.length > 0 && ! file.eof?
+          # insert lines through first line matching the chunk
+          while file_line = file.gets && file_line != current_chunk.first
+            final_lines << file_line
+          end
+
+          # scan all leading matching lines in
+          final_lines << current_chunk.shift
+          matching_lines = current_chunk.take_while { |chunk_line| file.gets == chunk_line }
+          final_lines += matching_lines
+          current_chunk = current_chunk.drop(matching_lines.length)
+
+          # drop non-matching lines from input file
+          loop while file_line = file.gets && ! current_chunk.include?(file_line)
+
+          # insert diff lines through next matching line
+          matching_lines = current_chunk.take_while { |chunk_line| file_line != chunk_line }
+          final_lines += current_chunk
+          current_chunk = current_chunk.drop(matching_lines.length)
+        end
+      end
+    end
   end
 
   # Create the file described in this +FileDiff+ at +filename+.

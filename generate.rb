@@ -53,7 +53,6 @@ Dir.chdir(directory) do
       puts "\tProcessing #{filename}" if VERBOSE
 
       file_diffs = FileDiff.diffs_from(file)
-      puts file_diffs
 
       Dir.chdir(absolute_repository_directory) do
         file_diffs.each do |file_diff|
