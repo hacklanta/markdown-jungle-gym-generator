@@ -50,6 +50,11 @@ class FileDiff
     @diff_array = diff_array
   end
 
+  def lines_match?(file_line, diff_line)
+    file_line == diff_line or
+      file_line == diff_line.gsub(/->.*<-/, '')
+  end
+
   # Apply the diff described in this +FileDiff+ to an existing file with
   # +filename+. Assumes +filename+ exists.
   def apply
@@ -69,7 +74,7 @@ class FileDiff
       diff_chunks.each do |current_chunk|
         while current_chunk.length > 0 && ! file.eof?
           # insert lines through first line matching the chunk
-          while file_line = file.gets && file_line != current_chunk.first
+          while (file_line = file.gets) && ! lines_match?(file_line, current_chunk.first)
             final_lines << file_line
           end
 
