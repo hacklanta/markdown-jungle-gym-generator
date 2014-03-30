@@ -33,7 +33,7 @@ class FileDiff
 
           current_diff_filename = nil
           current_diff_array = []
-        elsif current_diff_array
+        elsif current_diff_filename
           current_diff_array << line
         elsif match = line.match(/^```(?:[^:]+):(.+)$/)
           current_diff_filename = match[1]
