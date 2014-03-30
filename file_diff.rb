@@ -75,7 +75,7 @@ class FileDiff
       end
 
     final_lines = []
-    File.open(filename) do |file|
+    File.open(@filename) do |file|
       diff_chunks.each do |current_chunk|
         while current_chunk.length > 0 && ! file.eof?
           # insert lines through first line matching the chunk
@@ -107,6 +107,8 @@ class FileDiff
         final_lines << file_line 
       end
     end
+
+    File.write(@filename, final_lines.join(''), :mode => 'w')
   end
 
   # Create the file described in this +FileDiff+ at +filename+.
