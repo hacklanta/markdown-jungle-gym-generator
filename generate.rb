@@ -20,6 +20,9 @@ end.process!
 
 VERBOSE = options[:verbose]
 
+# Set up starting point, which is base repo; no starting point means
+# blank dir/git init.
+
 repository_directory = ARGV[0] || 'lift-jungle-gym-repository'
 
 directory = options[:directory]
