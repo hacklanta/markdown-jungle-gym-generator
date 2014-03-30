@@ -74,8 +74,11 @@ Dir.chdir(directory) do
             file_diff.create
           end
 
-          run_command('git', 'add', '*')
-          run_command('git', 'commit', '-m', "#{file_title} (Checkpoint #{i + 1})")
+          checkpoint_message = "#{file_title} (Checkpoint #{i + 1})"
+          puts "\tGenerating checkpoint commit with message #{checkpoint_message}" if VERBOSE
+
+          run_command 'git', 'add', '*'
+          run_command 'git', 'commit', '-m', checkpoint_message
         end
 
         # tag section-1?
