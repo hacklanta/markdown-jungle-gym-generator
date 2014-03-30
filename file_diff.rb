@@ -89,6 +89,9 @@ class FileDiff
           final_lines += matching_lines
           current_chunk = current_chunk.drop(matching_lines.length)
 
+          # move on if there's nothing left in the current chunk
+          next if current_chunk.empty?
+
           # drop non-matching lines from input file
           loop while file_line = file.gets && ! current_chunk.include?(file_line)
 
