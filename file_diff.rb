@@ -79,7 +79,7 @@ class FileDiff
           end
 
           # scan all leading matching lines in
-          final_lines << current_chunk.shift
+          final_lines << current_chunk.shift.gsub(/->(.*)<-/, '\1')
           matching_lines = current_chunk.take_while { |chunk_line| file.gets == chunk_line }
           final_lines += matching_lines
           current_chunk = current_chunk.drop(matching_lines.length)
