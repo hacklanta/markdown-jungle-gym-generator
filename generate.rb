@@ -56,12 +56,21 @@ Dir.chdir(directory) do
 
       Dir.chdir(absolute_repository_directory) do
         file_diffs.each do |file_diff|
+          puts "\t\tFound file reference #{file_diff.filename}" if VERBOSE
           if File.exists?(file_diff.filename)
+            puts "\t\tAttempting to patch previous file." if VERBOSE
             file_diff.apply
+
+            # couldn't patch previous file, please select appropriate range
           else
+            puts "\t\tExisting file not found, creating file." if VERBOSE
             file_diff.create
           end
+
+          # generate checkopoint commit
         end
+
+        # tag section-1?
       end
     end
   end
