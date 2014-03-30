@@ -29,13 +29,19 @@ unless Dir.exists?(repository_directory)
   Dir.mkdir(repository_directory)
 end
 
+def run_command(*command)
+  if VERBOSE
+    puts " -> #{command}"
+    system(*command)
+    puts " -> Done."
+  else
+    %x{#{command.first} #{command[1..-1].map { |part| %{"#{part.gsub('"', '\"')}"} }.join(" ")}}
+  end
+end
+
 unless Dir.exists?(File.join(repository_directory, '.git'))
   Dir.chdir(repository_directory) do
-    if VERBOSE
-      system("git init")
-    else
-      `git init`
-    end
+    run_command('git', 'init')
   end
 end
 
