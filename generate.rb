@@ -58,10 +58,11 @@ Dir.chdir(directory) do
     File.open(filename) do |file|
       puts "\tProcessing #{filename}" if VERBOSE
 
+      file_title = file.gets.sub(/^#+/, '').strip
       file_diffs = FileDiff.diffs_from(file)
 
       Dir.chdir(absolute_repository_directory) do
-        file_diffs.each do |file_diff|
+        file_diffs.each_with_index do |file_diff, i|
           puts "\t\tFound file reference #{file_diff.filename}" if VERBOSE
           if File.exists?(file_diff.filename)
             puts "\t\tAttempting to patch previous file." if VERBOSE
@@ -73,7 +74,8 @@ Dir.chdir(directory) do
             file_diff.create
           end
 
-          # generate checkopoint commit
+          run_command('git', 'add', '*')
+          run_command('git', 'commit', '-m', "#{file_title} (Checkpoint #{i + 1})")
         end
 
         # tag section-1?
